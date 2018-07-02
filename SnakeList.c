@@ -41,13 +41,13 @@ void freeSnake(SnakeList *snake){
 }
 
 void drawSnake(SnakeList *snake, WINDOW * win){
-    int i = 0;
-    char str[5];
+    //int i = 0;
+    //char str[5];
     
     for ( SnakeCell *cell = snake->head; cell; cell = cell->next ) {
-        sprintf(str, "%d", i);
-        i++;
-        mvwaddch(win, cell->y, cell->x, str[0]);
+        //sprintf(str, "%d", i);
+        //i++;
+        mvwaddch(win, cell->y, cell->x, '0');
     }
 
 }
@@ -137,4 +137,44 @@ void changeSnakeDir(SnakeList *snake, Direction newDirection){
         default:
             break;
     }
+}
+
+SnakeIterator *createSnakeIterator(SnakeList *snake){
+    SnakeIterator *iterator = (SnakeIterator *) malloc(sizeof(SnakeIterator));
+    iterator->current = snake->head;
+    return iterator;
+}
+
+bool hasNext(SnakeIterator *iterator){
+    return iterator->current;
+}
+
+SnakeCell *next(SnakeIterator *iterator){
+    SnakeCell *prev = iterator->current;
+    iterator->current = iterator->current->next;
+    return prev;
+}
+
+void freeSnakeIterator(SnakeIterator *iterator){
+    free(iterator);
+}
+
+void growSnake(SnakeList *snake){
+    Direction direction = snake->heading;
+    switch(direction){
+        case UP:
+            addCell(snake, snake->head->x, snake->head->y - 1);
+            break;
+        case DOWN:
+            addCell(snake, snake->head->x, snake->head->y + 1);
+            break;
+        case LEFT:
+            addCell(snake, snake->head->x - 1, snake->head->y);
+            break;
+        case RIGHT:
+            addCell(snake, snake->head->x + 1, snake->head->y);
+            break;
+        default:
+            break;
+    }   
 }

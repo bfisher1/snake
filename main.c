@@ -5,6 +5,7 @@
 #include <time.h>
 #include "SnakeList.h"
 #include "Directions.h"
+#include "Food.h"
 
 int main(int argc, char *argv[]){
     initscr();
@@ -20,10 +21,15 @@ int main(int argc, char *argv[]){
 
     nodelay(stdscr, TRUE);
     SnakeList *snake = createSnake(10,10);
-    for(int i = 11; i < 17; i++ ){
-        addCell(snake, 10, i);
-    }
     
+    
+    //set up random number generator
+    time_t t;
+    srand((unsigned) time(&t));
+
+    //spawn original food amounts
+    int foodLen = 3;
+    Food *food = spawnFood(foodLen, width, height, snake);
 
     int key;
     clock_t start = clock();
@@ -49,19 +55,24 @@ int main(int argc, char *argv[]){
             wclear(win);
             moveSnake(snake, width, height);
             drawSnake(snake, win);
-            //draw food
+            drawFood(food, foodLen, win);
+            
             wrefresh(win);
             
             start = clock() + delay;
         }
         
-        mvwaddch(win, 2, 2, 'c');
-        
-        
-
         if ( hitSelf(snake) ){
             
             break;
+        }
+
+        int x, y;
+        if( hitFood(food, foodLen, snake, &x, &y) ){
+            
+            replaceFood(food, foodLen, x, y, width, height, snake);
+            growSnake(snake);
+            score++;
         }
         
     }
