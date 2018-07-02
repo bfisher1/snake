@@ -1,3 +1,10 @@
+/**
+    @file SnakeList.c
+    @author Ben Fisher
+
+    Implementation file for functions defined in SnakeList.h.
+    Functions in this file are related to the snake entity.
+*/
 #include "SnakeList.h"
 
 SnakeList *createSnake(int x, int y){
@@ -40,16 +47,10 @@ void freeSnake(SnakeList *snake){
     free(snake);
 }
 
-void drawSnake(SnakeList *snake, WINDOW * win){
-    //int i = 0;
-    //char str[5];
-    
+void drawSnake(SnakeList *snake, WINDOW * win) {
     for ( SnakeCell *cell = snake->head; cell; cell = cell->next ) {
-        //sprintf(str, "%d", i);
-        //i++;
         mvwaddch(win, cell->y, cell->x, '0');
     }
-
 }
     
 void moveSnake(SnakeList *snake, int width, int height){
@@ -76,18 +77,20 @@ void moveSnake(SnakeList *snake, int width, int height){
     int px = snake->head->x, py = snake->head->y;
     snake->head->x += dx;
     snake->head->y += dy;
+    
     //Pacman boundaries
-    if(snake->head->x < 0){
-        snake->head->x = width;
+    int indent = 0;
+    if(snake->head->x < 0 + indent){
+        snake->head->x = width - indent;
     }
-    else if(snake->head->x > width){
-        snake->head->x = 0;
+    else if(snake->head->x > width - indent){
+        snake->head->x = 0 + indent;
     }
-    else if(snake->head->y < 0){
-        snake->head->y = height;
+    else if(snake->head->y < 0 + indent){
+        snake->head->y = height - indent;
     }
-    else if(snake->head->y > height){
-        snake->head->y = 0;
+    else if(snake->head->y > height - indent){
+        snake->head->y = 0 + indent;
     }
 
     for ( SnakeCell *cell = snake->head->next; cell; cell = cell->next ) {

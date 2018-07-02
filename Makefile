@@ -9,3 +9,6 @@ Food.o : Food.c Food.h
 SnakeList.o : SnakeList.c SnakeList.h
 
 main.o : main.c SnakeList.h Food.h
+
+clean:
+	rm -f Food.o SnakeList.o main.o Snake

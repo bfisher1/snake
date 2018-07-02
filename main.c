@@ -1,3 +1,12 @@
+/**
+    @file main.c
+    @author Ben Fisher
+
+    Main program run for snake that contains the game loop and flow of control.
+    Snake is a game where you control the movement of a snake around an area.
+    You move the snake towards food, which it grows when it eats. If the snake
+    runs into itself, the game is over.
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -6,7 +15,14 @@
 #include "SnakeList.h"
 #include "Directions.h"
 #include "Food.h"
+/**
+    Starting point of the program.
 
+    @param argc number of command line arguments
+    @param argv array of command line arguments
+
+    @return exit status of the program
+*/
 int main(int argc, char *argv[]){
     initscr();
     noecho();
@@ -16,8 +32,7 @@ int main(int argc, char *argv[]){
     int width = 70;
     int height = 20;
     int delay = 40000;
-    //timeout(500);
-    WINDOW * win = newwin(height, width, 0, 0);
+    WINDOW * win = newwin(height + 1, width + 1, 0, 0);
 
     nodelay(stdscr, TRUE);
     SnakeList *snake = createSnake(10,10);
@@ -34,6 +49,7 @@ int main(int argc, char *argv[]){
     int key;
     clock_t start = clock();
     while(true) {
+        //read user key press
         if( (key = getch()) != ERR  ) {
             
             if(key ==  KEY_DOWN){
@@ -48,12 +64,18 @@ int main(int argc, char *argv[]){
             else if(key ==  KEY_LEFT ){
                 changeSnakeDir(snake, LEFT);
             }
-        
         }
-        
+        //update snake position and drawings based on delay time
         if( clock() >= start + delay ){
             wclear(win);
             moveSnake(snake, width, height);
+            //draw the score
+            char scoreStr[10];
+            sprintf(scoreStr, "%d", score);
+            for(int i = 0; scoreStr[i]; i++){
+                mvwaddch(win, 0, i, scoreStr[i]);
+            }
+            //draw snake and food
             drawSnake(snake, win);
             drawFood(food, foodLen, win);
             
@@ -80,5 +102,5 @@ int main(int argc, char *argv[]){
     freeSnake(snake);
     endwin();
     printf("GAME OVER. SCORE: %d\n", score);
-    return 0;
+    return EXIT_SUCCESS;
 }
