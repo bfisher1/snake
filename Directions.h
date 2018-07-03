@@ -11,6 +11,7 @@ typedef enum DirectionsEnum {
     LEFT,
     RIGHT,
     UP,
-    DOWN
+    DOWN,
+    NONE
 } Direction;
 #endif /* DIRECTIONS */

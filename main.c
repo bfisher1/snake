@@ -48,25 +48,47 @@ int main(int argc, char *argv[]){
 
     int key;
     clock_t start = clock();
+    Direction lastDirection = NONE;
+    bool paused = false;
     while(true) {
         //read user key press
-        if( (key = getch()) != ERR  ) {
-            
+        if( (key = getch()) != ERR ) {
             if(key ==  KEY_DOWN){
-                changeSnakeDir(snake, DOWN);
+                lastDirection = DOWN;
             }
             else if ( key == KEY_UP ){
-                changeSnakeDir(snake, UP);
+                lastDirection = UP;
             }
             else if(key == KEY_RIGHT ){
-                changeSnakeDir(snake, RIGHT);
+                lastDirection = RIGHT;
             }
             else if(key ==  KEY_LEFT ){
-                changeSnakeDir(snake, LEFT);
+                lastDirection = LEFT;
+            }
+            else if(key == 'p'){
+                paused = true;
+            }
+        }
+        //if paused loop until p is hit again
+        if (paused){
+            clock_t start = clock();
+            while( ((float)(clock() - start)) / CLOCKS_PER_SEC < .5 ){
+            }
+            while (true){
+                if( (key = getch()) != ERR ) {
+                    if(key == 'p'){
+                        paused = false;
+                        break;
+                    }
+                }
             }
         }
         //update snake position and drawings based on delay time
         if( clock() >= start + delay ){
+            if(lastDirection != NONE){
+                changeSnakeDir(snake, lastDirection);
+            }
+            lastDirection = NONE;
             wclear(win);
             moveSnake(snake, width, height);
             //draw the score
@@ -80,7 +102,6 @@ int main(int argc, char *argv[]){
             drawFood(food, foodLen, win);
             
             wrefresh(win);
-            
             start = clock() + delay;
         }
         
